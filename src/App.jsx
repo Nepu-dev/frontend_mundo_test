@@ -43,20 +43,10 @@ function App() {
     }
   };
 
-  const obtenerDispositivos = async (modelo, marca, bodega) => {
-    setLoading(true);
-    try {
-      const { data } = await axios.get(`http://localhost:8000/dispositivos/${bodega}`);
-      setDispositivos(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  }
   const obtenerDispositivosFilter = async (modelo, marca, bodega) => {
     setLoading(true);
     try {
+      console.log(modelo, marca, bodega);
       const { data } = await axios.get(`http://localhost:8000/dispositivos-filter/${modelo}/${marca}/${bodega}`);
       setDispositivos(data);
     } catch (error) {
@@ -69,19 +59,28 @@ function App() {
   const handleChange = (e) => {
     if (e.target.name === "bodega") {
       const bodega = e.target.value
-      obtenerDispositivos(modeloSeleccionad0, marcaSeleccionada, bodega);
+      obtenerDispositivosFilter(modeloSeleccionad0, marcaSeleccionada, bodega);
       setBodegaSeleccionada(bodega);
     }
     if (e.target.name === "marca") {
       const marca = e.target.value
+      let modeloSeleccionado = modeloSeleccionad0;
       obtenerModelos(marca);
+      if (e.target.value === "0") {
+        modeloSeleccionado = 0;
+        setModeloSeleccionado(0);
+      }
       setMarcaSeleccionada(marca);
-      obtenerDispositivosFilter(modeloSeleccionad0, marca, bodegaSeleccionada);
+      obtenerDispositivosFilter(modeloSeleccionado, marca, bodegaSeleccionada);
     }
     if (e.target.name === "modelo") {
       const modelo = e.target.value
       obtenerDispositivosFilter(modelo, marcaSeleccionada, bodegaSeleccionada);
-      setModeloSeleccionado(modelo);
+      if (e.target.value === "0") {
+        setModeloSeleccionado(0);
+      }else{
+        setModeloSeleccionado(modelo);
+      }
     }
   }
 
